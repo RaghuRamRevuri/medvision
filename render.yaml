@@ -1,0 +1,26 @@
+services:
+  # FastAPI Python Backend Web Service
+  - type: web
+    name: medvision-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "uvicorn app:app --host 0.0.0.0 --port $PORT --app-dir backend"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+    healthCheckPath: /
+
+  # Vite Frontend Static Site
+  - type: static_site
+    name: medvision-frontend
+    plan: free
+    branch: main
+    buildCommand: "npm run build"
+    publishPath: "dist"
+    routes:
+      - type: rewrite
+        source: "/*"
+        destination: "/index.html"
